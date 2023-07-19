@@ -13,8 +13,8 @@
       text-align: center;
     }
 
-    .container {
-      max-width: 800px;
+    form {
+      width: 400px;
       margin: 0 auto;
     }
 
@@ -52,10 +52,8 @@
       width: 100%;
     }
 
-    .students-list th,
-    .students-list td {
+    .students-list th, .students-list td {
       padding: 8px;
-      border: 1px solid #ccc;
     }
 
     .students-list th {
@@ -66,21 +64,14 @@
       background-color: #f2f2f2;
     }
 
-    @media (max-width: 768px) {
-      .container {
-        padding: 10px;
-      }
-    }
-
     @media (max-width: 480px) {
-      .form-group,
-      input[type="submit"] {
-        width: 90%;
-        margin-left: auto;
-        margin-right: auto;
-      
+      table {
+        font-size: 14px;
       }
-
+      form{
+        width: 800px;
+        font-size: 1.3em;
+      }
     }
 
     @keyframes fadeIn {
@@ -92,44 +83,65 @@
       }
     }
 
+    @keyframes slideIn {
+      0% {
+        transform: translateY(100%);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+
     .fade-in {
       animation: fadeIn 0.5s ease-in-out forwards;
+    }
+
+    .slide-in {
+      animation: slideIn 0.5s ease-in-out forwards;
+    }
+
+    .copyright {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 12px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Enregistrement des étudiants</h1>
-    <form id="studentForm">
-      <div class="form-group">
-        <label for="nombreEtudiants">Nombre d'étudiants à enregistrer :</label>
-        <input type="text" id="nombreEtudiants" required>
-      </div>
-      <input type="submit" value="Commencer">
-    </form>
+  <h1>Enregistrement des étudiants</h1>
+  <form id="studentForm">
+    <div class="form-group">
+      <label for="nombreEtudiants">Nombre d'étudiants à enregistrer :</label>
+      <input type="text" id="nombreEtudiants" required>
+    </div>
+    <input type="submit" value="Commencer">
+  </form>
 
-    <form id="registerForm" style="display: none;">
-      <div class="form-group">
-        <label for="nom">Nom :</label>
-        <input type="text" id="nom" name="nom" required>
-      </div>
-      <div class="form-group">
-        <label for="post-nom">Post-Nom :</label>
-        <input type="text" id="post-nom" name="post-nom" required>
-      </div>
-      <div class="form-group">
-        <label for="prenom">Prénom :</label>
-        <input type="text" id="prenom" name="prenom" required>
-      </div>
-      <div class="form-group">
-        <label for="promotion">Promotion :</label>
-        <input type="text" id="promotion" name="promotion" required>
-      </div>
-      <input type="submit" id="submitButton" value="Enregistrer">
-    </form>
+  <form id="registerForm" style="display: none;">
+    <div class="form-group">
+      <label for="nom">Nom :</label>
+      <input type="text" id="nom" name="nom" required>
+    </div>
+    <div class="form-group">
+      <label for="post-nom">Post-Nom :</label>
+      <input type="text" id="post-nom" name="post-nom" required>
+    </div>
+    <div class="form-group">
+      <label for="prenom">Prénom :</label>
+      <input type="text" id="prenom" name="prenom" required>
+    </div>
+    <div class="form-group">
+      <label for="promotion">Promotion :</label>
+      <input type="text" id="promotion" name="promotion" required>
+    </div>
+    <input type="submit" id="submitButton" value="Enregistrer">
+  </form>
 
-    <table id="studentsList" class="students-list" style="display: none;"></table>
-  </div>
+  <table id="studentsList" class="students-list" style="display: none;"></table>
+
+  <p class="copyright">
+    Fait par: NZITA PUINDI, FRANCISCO PUKUTA, NTELA NTELA, BFUTA YALA, KAMANTE NTALAMOSI
+  </p>
 
   <script>
     var students = [];
@@ -144,7 +156,8 @@
       if (!isNaN(totalStudents) && totalStudents > 0) {
         document.getElementById('studentForm').style.display = 'none';
         document.getElementById('registerForm').style.display = 'block';
-        document.getElementById('registerForm').classList.add('fade-in');
+        document.getElementById('registerForm').classList.add('slide-in');
+        document.getElementById('submitButton').value = 'Enregistrer et passer à l\'étudiant n°' + currentStudent;
         document.getElementById('nom').focus();
       }
     });
@@ -168,6 +181,7 @@
       currentStudent++;
 
       if (currentStudent <= totalStudents) {
+        document.getElementById('submitButton').value = 'Enregistrer et passer à l\'étudiant n°' + currentStudent;
         document.getElementById('nom').focus();
       }
 
@@ -182,11 +196,9 @@
       document.getElementById('studentsList').classList.add('fade-in');
 
       var table = document.getElementById('studentsList');
-      var thead = document.createElement('thead');
-      var tbody = document.createElement('tbody');
 
+      var headerRow = table.insertRow();
       var headers = ['Nom', 'Post-Nom', 'Prénom', 'Promotion'];
-      var headerRow = document.createElement('tr');
 
       for (var i = 0; i < headers.length; i++) {
         var headerCell = document.createElement('th');
@@ -194,23 +206,14 @@
         headerRow.appendChild(headerCell);
       }
 
-      thead.appendChild(headerRow);
-      table.appendChild(thead);
-
       for (var j = 0; j < students.length; j++) {
         var student = students[j];
-        var newRow = document.createElement('tr');
-
+        var newRow = table.insertRow();
         for (var k = 0; k < student.length; k++) {
-          var newCell = document.createElement('td');
+          var newCell = newRow.insertCell();
           newCell.appendChild(document.createTextNode(student[k]));
-          newRow.appendChild(newCell);
         }
-
-        tbody.appendChild(newRow);
       }
-
-      table.appendChild(tbody);
     }
   </script>
 </body>
