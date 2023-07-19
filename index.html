@@ -49,6 +49,7 @@
     .students-list {
       margin-top: 20px;
       border-collapse: collapse;
+      width: 100%;
     }
 
     .students-list th, .students-list td {
@@ -61,6 +62,44 @@
 
     .students-list tr:nth-child(even) {
       background-color: #f2f2f2;
+    }
+
+    @media (max-width: 480px) {
+      table {
+        font-size: 14px;
+      }
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideIn {
+      0% {
+        transform: translateY(100%);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out forwards;
+    }
+
+    .slide-in {
+      animation: slideIn 0.5s ease-in-out forwards;
+    }
+
+    .copyright {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 12px;
     }
   </style>
 </head>
@@ -94,17 +133,11 @@
     <input type="submit" id="submitButton" value="Enregistrer">
   </form>
 
-  <table id="studentsList" class="students-list" style="display: none;">
-    <thead>
-      <tr>
-        <th>Nom</th>
-        <th>Post-Nom</th>
-        <th>Prénom</th>
-        <th>Promotion</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <table id="studentsList" class="students-list" style="display: none;"></table>
+
+  <p class="copyright">
+    Fait par: NZITA PUINDI, FRANCISCO PUKUTA, NTELA NTELA, BFUTA YALA, KAMANTE NTALAMOSI
+  </p>
 
   <script>
     var students = [];
@@ -119,6 +152,7 @@
       if (!isNaN(totalStudents) && totalStudents > 0) {
         document.getElementById('studentForm').style.display = 'none';
         document.getElementById('registerForm').style.display = 'block';
+        document.getElementById('registerForm').classList.add('slide-in');
         document.getElementById('submitButton').value = 'Enregistrer et passer à l\'étudiant n°' + currentStudent;
         document.getElementById('nom').focus();
       }
@@ -154,17 +188,26 @@
 
     function displayStudentsList() {
       document.getElementById('registerForm').style.display = 'none';
-      document.getElementById('studentsList').style.display = 'block';
+      document.getElementById('studentsList').style.display = 'table';
+      document.getElementById('studentsList').classList.add('fade-in');
 
-      var tableBody = document.getElementById('studentsList').getElementsByTagName('tbody')[0];
-      tableBody.innerHTML = '';
+      var table = document.getElementById('studentsList');
 
-      for (var i = 0; i < students.length; i++) {
-        var student = students[i];
-        var newRow = tableBody.insertRow();
-        for (var j = 0; j < student.length; j++) {
+      var headerRow = table.insertRow();
+      var headers = ['Nom', 'Post-Nom', 'Prénom', 'Promotion'];
+
+      for (var i = 0; i < headers.length; i++) {
+        var headerCell = document.createElement('th');
+        headerCell.appendChild(document.createTextNode(headers[i]));
+        headerRow.appendChild(headerCell);
+      }
+
+      for (var j = 0; j < students.length; j++) {
+        var student = students[j];
+        var newRow = table.insertRow();
+        for (var k = 0; k < student.length; k++) {
           var newCell = newRow.insertCell();
-          newCell.appendChild(document.createTextNode(student[j]));
+          newCell.appendChild(document.createTextNode(student[k]));
         }
       }
     }
