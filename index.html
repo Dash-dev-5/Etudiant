@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Enregistrement des étudiants</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    input[type="submit"] {
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .students-list {
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+
+    .students-list th, .students-list td {
+      padding: 8px;
+    }
+
+    .students-list th {
+      background-color: #f2f2f2;
+    }
+
+    .students-list tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>Enregistrement des étudiants</h1>
+  <form id="studentForm">
+    <div class="form-group">
+      <label for="nombreEtudiants">Nombre d'étudiants à enregistrer :</label>
+      <input type="text" id="nombreEtudiants" required>
+    </div>
+    <input type="submit" value="Commencer">
+  </form>
+
+  <form id="registerForm" style="display: none;">
+    <div class="form-group">
+      <label for="nom">Nom :</label>
+      <input type="text" id="nom" name="nom" required>
+    </div>
+    <div class="form-group">
+      <label for="post-nom">Post-Nom :</label>
+      <input type="text" id="post-nom" name="post-nom" required>
+    </div>
+    <div class="form-group">
+      <label for="prenom">Prénom :</label>
+      <input type="text" id="prenom" name="prenom" required>
+    </div>
+    <div class="form-group">
+      <label for="promotion">Promotion :</label>
+      <input type="text" id="promotion" name="promotion" required>
+    </div>
+    <input type="submit" id="submitButton" value="Enregistrer">
+  </form>
+
+  <table id="studentsList" class="students-list" style="display: none;">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Post-Nom</th>
+        <th>Prénom</th>
+        <th>Promotion</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    var students = [];
+    var currentStudent = 1;
+    var totalStudents = 0;
+
+    document.getElementById('studentForm').addEventListener('submit', function(e) {
+      e.preventDefault(); // Empêche la soumission du formulaire
+
+      totalStudents = parseInt(document.getElementById('nombreEtudiants').value);
+
+      if (!isNaN(totalStudents) && totalStudents > 0) {
+        document.getElementById('studentForm').style.display = 'none';
+        document.getElementById('registerForm').style.display = 'block';
+        document.getElementById('submitButton').value = 'Enregistrer et passer à l\'étudiant n°' + currentStudent;
+        document.getElementById('nom').focus();
+      }
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault(); // Empêche la soumission du formulaire
+
+      var nom = document.getElementById('nom').value;
+      var postNom = document.getElementById('post-nom').value;
+      var prenom = document.getElementById('prenom').value;
+      var promotion = document.getElementById('promotion').value;
+
+      students.push([nom, postNom, prenom, promotion]);
+
+      // Réinitialise les champs du formulaire
+      document.getElementById('nom').value = '';
+      document.getElementById('post-nom').value = '';
+      document.getElementById('prenom').value = '';
+      document.getElementById('promotion').value = '';
+
+      currentStudent++;
+
+      if (currentStudent <= totalStudents) {
+        document.getElementById('submitButton').value = 'Enregistrer et passer à l\'étudiant n°' + currentStudent;
+        document.getElementById('nom').focus();
+      }
+
+      if (currentStudent > totalStudents) {
+        displayStudentsList();
+      }
+    });
+
+    function displayStudentsList() {
+      document.getElementById('registerForm').style.display = 'none';
+      document.getElementById('studentsList').style.display = 'block';
+
+      var tableBody = document.getElementById('studentsList').getElementsByTagName('tbody')[0];
+      tableBody.innerHTML = '';
+
+      for (var i = 0; i < students.length; i++) {
+        var student = students[i];
+        var newRow = tableBody.insertRow();
+        for (var j = 0; j < student.length; j++) {
+          var newCell = newRow.insertCell();
+          newCell.appendChild(document.createTextNode(student[j]));
+        }
+      }
+    }
+  </script>
+</body>
+</html>
